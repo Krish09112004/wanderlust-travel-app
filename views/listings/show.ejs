@@ -3,23 +3,23 @@
 
     <div class="row mt-3">
       <div class="col-8 offset-3">
-        <h3>Listing Details :</h3>
+        <h3><%= listing.title %> </h3>
       </div>
-    <div class="card col-6 offset-3 show-card">
+    <div class="card listing-card col-6 offset-3 show-card">
       <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listings_image">
       <div class="card-body">
-       <p class="card-text">
-        <b> <%= listing.title %> </b>
-         <%= listing.title %> <br>
-         <%= listing.description %> <br>
-         <%= listing.price.toLocaleString("en-IN", { style: "currency", currency: "INR" }) %>
+        
+          <p class="card-text"> <i>Owned by <%=  listing.owner.username %></i>  </p>  
+              <p class="card-text"><%= listing.description %> <br> </p> 
+                <p class="card-text"> <%= listing.price.toLocaleString("en-IN", { style: "currency", currency: "INR" }) %> </p> 
          <br>        
-        <%= listing.location %>
-        <%= listing.country %>
-         </p> 
-      </div>
+         <p class="card-text">  <%= listing.location %>  </p> 
+          <p class="card-text">  <%= listing.country %>  </p> 
+        
+      </div> 
     </div>
     <br />
+    <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
     <div class="btns mb-3">
     <a href="/listings/<%= listing._id %>/edit"
       class="btn edit-btn btn-dark col-1 offset-3" >Edit</a>
@@ -29,6 +29,63 @@
 
 
   </div>
+ <% } %>
+  <% if(currUser){ %>
+  <div class="col-8 offset-3 mb-3"> 
+    <br>  
+    <h4>Leave a Review</h4> 
+    <form method="post" action="/listings/<%= listing._id  %>/reviews">
+      <div class="mb-3 mt-3">
+        <label for="rating" class="form-label">Rating</label>  
+     
+<fieldset class="starability-slot">
+  <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+  <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+  <label for="first-rate1" title="Terrible">1 star</label>
+  <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+  <label for="first-rate2" title="Not good">2 stars</label>
+  <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+  <label for="first-rate3" title="Average">3 stars</label>
+  <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+  <label for="first-rate4" title="Very good">4 stars</label>
+  <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+  <label for="first-rate5" title="Amazing">5 stars</label>
+</fieldset> 
+
+      </div>
+      <div class="mb-3">
+        <label for="comment" class="form-label">Comments</label> 
+        <textarea name="review[comment]" class="form-control" id="comment" cols="30" rows="5"></textarea>  
+      </div>
+      <button class="btn btn-outline-dark" type="submit">Submit</button>
+    </form>
+  </div>
+  <% } %>
+  
+  <div class="col-8 offset-3">
+    <hr>
+  <div class="row">
+    <p><b>All reviews</b></p>
+    <% for(review of listing.reviews){ %>
+      
+
+      <div class="card col-6 mb-3 ms-3" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">@<%= review.author.username %></h5>
+          <p class="starability-result" data-rating="<%= review.rating %>">
+            rated: 3 star
+          </p>
+          <h6 class="card-text"><%= review.comment %></h6>
+          
+          <form class="mb-3" method="post" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+            <button class="btn btn-outline-dark">Delete</button>
+          </form>
+        </div>
+      </div>
+    <%} %>
+
+  </div>
+</div>
   </div>
   </body>
 
