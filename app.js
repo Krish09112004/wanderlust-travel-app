@@ -89,13 +89,17 @@ app.use((req,res,next)=>{
   next();
 })
 
-app.use("/",listingRoutes);
+app.get("/",(req,res)=>{
+  res.redirect("/listings");
+})
+
 app.use("/listings",listingRoutes);
 app.use("/listings/:id/reviews",reviewRoutes);
 app.use("/",userRoutes);
 app.all("*",(req,res,next)=>{
   next(new ExpressError(404,"Page not found"));
 })
+
 
 
 app.use((err,req,res,next)=>{ 
