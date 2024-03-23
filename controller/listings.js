@@ -21,14 +21,12 @@ module.exports.showListing =  async (req, res) => {
     req.flash("error" ,"Listing you searched is not exist");
     res.redirect("/listings");
   }
-  console.log(listing);
   res.render("listings/show.ejs", { listing });
 }
 
 module.exports.createListing = async (req, res,next) => {
   let url = req.file.path;
   let filename = req.file.filename;
-  console.log(url,"..",filename);    
   const newListing = new Listing(req.body.listing);
   newListing.owner = req.user._id;
   newListing.image = {url, filename};
