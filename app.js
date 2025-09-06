@@ -28,7 +28,7 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, 'public')));
 
-const dbUrl = process.env.ATLASDB_URL;
+const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
@@ -110,6 +110,7 @@ app.use((err,req,res,next)=>{
 
 
 
-app.listen(8080, () => {
-  console.log("server is listening to port 8080");
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
