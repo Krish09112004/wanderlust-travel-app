@@ -90,7 +90,38 @@ app.use((req,res,next)=>{
 })
 
 app.get("/",(req,res)=>{
-  res.redirect("/listings");
+  res.redirect("/listings")
+})
+
+// Debug route for production troubleshooting
+app.get("/debug", async (req,res)=>{
+  try {
+    const Listing = require("./models/listing.js");
+    const totalCount = await Listing.countDocuments({});
+    const sampleListings = await Listing.find({}).limit(3);
+    
+    res.json({
+      success: true,
+      database_url: process.env.ATLASDB_URL ? "Set" : "Not Set",
+      node_env: process.env.NODE_ENV || "not set",
+      total_listings: totalCount,
+      sample_listings: sampleListings.map(listing => ({
+        id: listing._id,
+        title: listing.title,
+        location: listing.location,
+        price: listing.price,
+        has_image: !!listing.image?.url,
+        has_owner: !!listing.owner
+      }))
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      error: error.message,
+      database_url: process.env.ATLASDB_URL ? "Set" : "Not Set",
+      node_env: process.env.NODE_ENV || "not set"
+    });
+  }
 })
 
 app.use("/listings",listingRoutes);
