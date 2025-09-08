@@ -1,1 +1,1 @@
-# wanderlust
+# WanderLust Travel App
